@@ -1,0 +1,10 @@
+# Backup originals
+videos/originals/
+
+# Temp files
+temp_*.mp4
+*.tmp
+
+# System files
+.DS_Store
+Thumbs.db

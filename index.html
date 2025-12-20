@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <title>Bali Drone Video Service | DJI Neo</title>
+    <meta name="description" content="Professional drone video for your Bali villa, cafe, or business. 1,000,000 IDR flat rate.">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        video {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: optimizeQuality;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <video id="hero-video" class="hero-video" autoplay muted playsinline preload="auto" disablePictureInPicture webkit-playsinline x-webkit-airplay="allow">
+            <source src="" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Premium drone videos for your Bali business</h1>
+            <p>DJI Neo aerial cinematography. 1,000,000 IDR flat rate.</p>
+            <div class="hero-ctas">
+                <a href="#booking" class="btn btn-primary">Book on WhatsApp</a>
+                <a href="https://wa.me/16469340781?text=Hi%20JJ%2C%20I%20want%20the%201%2C000%2C000%20IDR%20Neo%20drone%20shoot.%20Business%3A%20%5Bname%5D.%20Date%2Ftime%3A%20%5Bdate%5D.%20Villa%20address%3A%20%5Baddress%5D." class="btn btn-secondary" target="_blank" rel="noopener">Chat on WhatsApp</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+            <h2>Portfolio</h2>
+            <div id="filter-tags" class="filter-tags"></div>
+            <div id="video-grid" class="video-grid"></div>
+        </div>
+    </section>
+
+    <!-- Offer Section -->
+    <section id="offer" class="offer">
+        <div class="container">
+            <h2>What you get</h2>
+            <div class="offer-grid">
+                <div class="offer-item">
+                    <h3>30-60 second video</h3>
+                    <p>Cinematic aerial footage, professionally edited.</p>
+                </div>
+                <div class="offer-item">
+                    <h3>DJI Neo drone</h3>
+                    <p>Compact, safe, stunning 4K quality.</p>
+                </div>
+                <div class="offer-item">
+                    <h3>Quick turnaround</h3>
+                    <p>Delivered within 48 hours.</p>
+                </div>
+                <div class="offer-item">
+                    <h3>1,000,000 IDR</h3>
+                    <p>Flat rate. No hidden fees.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section id="booking" class="booking">
+        <div class="container">
+            <h2>Schedule a shoot</h2>
+            <form id="booking-form" class="booking-form">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" autocomplete="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="whatsapp">WhatsApp Number</label>
+                    <input type="tel" id="whatsapp" name="whatsapp" autocomplete="tel" placeholder="+62..." required>
+                </div>
+                <div class="form-group">
+                    <label for="business">Business Type</label>
+                    <input type="text" id="business" name="business" autocomplete="organization" placeholder="Villa, cafe, resort..." required>
+                </div>
+                <div class="form-group">
+                    <label for="location">Google Maps Link</label>
+                    <input type="url" id="location" name="location" autocomplete="url" placeholder="https://maps.app.goo.gl/..." required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="date">Preferred Date</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="time">Preferred Time</label>
+                        <select id="time" name="time" required>
+                            <option value="">Select time</option>
+                            <option value="05:00">5:00 AM</option>
+                            <option value="06:00">6:00 AM</option>
+                            <option value="07:00">7:00 AM</option>
+                            <option value="08:00">8:00 AM</option>
+                            <option value="09:00">9:00 AM</option>
+                            <option value="10:00">10:00 AM</option>
+                            <option value="11:00">11:00 AM</option>
+                            <option value="12:00">12:00 PM</option>
+                            <option value="13:00">1:00 PM</option>
+                            <option value="14:00">2:00 PM</option>
+                            <option value="15:00">3:00 PM</option>
+                            <option value="16:00">4:00 PM</option>
+                            <option value="17:00">5:00 PM</option>
+                            <option value="18:00">6:00 PM</option>
+                            <option value="19:00">7:00 PM</option>
+                            <option value="20:00">8:00 PM</option>
+                            <option value="21:00">9:00 PM</option>
+                            <option value="22:00">10:00 PM</option>
+                            <option value="23:00">11:00 PM</option>
+                            <option value="00:00">12:00 AM</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="notes">Notes (optional)</label>
+                    <textarea id="notes" name="notes" rows="3" placeholder="Any special requests..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Booking Request</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>Bali Drone Video Service</p>
+        </div>
+    </footer>
+
+    <!-- Video Modal -->
+    <div id="video-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <video id="modal-video" class="modal-video" controls playsinline preload="metadata">
+                <source src="" type="video/mp4">
+            </video>
+            <p id="modal-title" class="modal-title"></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
