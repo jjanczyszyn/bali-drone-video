@@ -16,8 +16,16 @@ function getVideoType(src) {
 }
 
 // Get appropriate video source based on device
-function getVideoSrc(video) {
-    return isMobile && video.mobileSrc ? video.mobileSrc : video.src;
+function getVideoSrc(video, isHero = false) {
+    if (isMobile) {
+        // For hero videos on mobile, use the 8-second looping version if available
+        if (isHero && video.mobileSrc) {
+            const heroSrc = video.mobileSrc.replace('.mp4', '_hero.mp4');
+            return heroSrc;
+        }
+        return video.mobileSrc || video.src;
+    }
+    return video.src;
 }
 
 // Initialize on DOM load
@@ -53,7 +61,7 @@ function initHeroVideoRotation() {
         nextVideo.playsInline = true;
         nextVideo.preload = 'auto';
         const source = document.createElement('source');
-        const videoSrc = getVideoSrc(heroVideos[nextIndex]);
+        const videoSrc = getVideoSrc(heroVideos[nextIndex], true);
         source.src = videoSrc;
         source.type = getVideoType(videoSrc);
         nextVideo.appendChild(source);
@@ -62,10 +70,11 @@ function initHeroVideoRotation() {
 
     function loadHeroVideo(index) {
         console.log('Loading hero video:', heroVideos[index]);
-        const videoSrc = getVideoSrc(heroVideos[index]);
+        const videoSrc = getVideoSrc(heroVideos[index], true);
         heroSource.src = videoSrc;
         heroSource.type = getVideoType(videoSrc);
         heroVideo.load();
+        heroVideo.loop = isMobile; // Loop hero videos on mobile since they're 8 seconds
         heroVideo.play().catch(err => {
             console.error('Hero video play error:', err);
         });
