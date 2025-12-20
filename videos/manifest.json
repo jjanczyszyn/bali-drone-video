@@ -1,6 +1,8 @@
 [
   {
     "src": "videos/Manna_Ubud.mp4",
+    "mobileSrc": "videos/mobile/Manna_Ubud.mp4",
+    "thumbnail": "videos/thumbnails/Manna_Ubud.jpg",
     "title": "Manna Ubud",
     "tag": "Restaurant",
     "link": "https://share.google/RrcFY828ladk4Fzux",
@@ -8,6 +10,8 @@
   },
   {
     "src": "videos/Zara_Serenity_aerial.mp4",
+    "mobileSrc": "videos/mobile/Zara_Serenity_aerial.mp4",
+    "thumbnail": "videos/thumbnails/Zara_Serenity_aerial.jpg",
     "title": "Zara Serenity",
     "tag": "Villa",
     "link": "https://share.google/8TZ77pASLcnebVmp8",
@@ -15,6 +19,8 @@
   },
   {
     "src": "videos/Zara_Serenity_drone.mp4",
+    "mobileSrc": "videos/mobile/Zara_Serenity_drone.mp4",
+    "thumbnail": "videos/thumbnails/Zara_Serenity_drone.jpg",
     "title": "Zara Serenity",
     "tag": "Villa",
     "link": "https://share.google/8TZ77pASLcnebVmp8",
@@ -22,6 +28,8 @@
   },
   {
     "src": "videos/Zara_Serenity_drone_2.mp4",
+    "mobileSrc": "videos/mobile/Zara_Serenity_drone_2.mp4",
+    "thumbnail": "videos/thumbnails/Zara_Serenity_drone_2.jpg",
     "title": "Zara Serenity",
     "tag": "Villa",
     "link": "https://share.google/8TZ77pASLcnebVmp8",
@@ -29,6 +37,8 @@
   },
   {
     "src": "videos/Trishnanda_Care_Center.mp4",
+    "mobileSrc": "videos/mobile/Trishnanda_Care_Center.mp4",
+    "thumbnail": "videos/thumbnails/Trishnanda_Care_Center.jpg",
     "title": "Trishnanda Care Center",
     "tag": "Business",
     "link": "https://share.google/gWcx7cH2lJ1TXkuFz",

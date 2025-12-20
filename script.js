@@ -1,6 +1,7 @@
 // Global state
 let allVideos = [];
 let currentFilter = 'All';
+let isMobile = window.innerWidth <= 768;
 
 // Helper function to get video MIME type
 function getVideoType(src) {
@@ -12,6 +13,11 @@ function getVideoType(src) {
         'ogg': 'video/ogg'
     };
     return types[ext] || 'video/mp4';
+}
+
+// Get appropriate video source based on device
+function getVideoSrc(video) {
+    return isMobile && video.mobileSrc ? video.mobileSrc : video.src;
 }
 
 // Initialize on DOM load
@@ -47,16 +53,18 @@ function initHeroVideoRotation() {
         nextVideo.playsInline = true;
         nextVideo.preload = 'auto';
         const source = document.createElement('source');
-        source.src = heroVideos[nextIndex].src;
-        source.type = getVideoType(heroVideos[nextIndex].src);
+        const videoSrc = getVideoSrc(heroVideos[nextIndex]);
+        source.src = videoSrc;
+        source.type = getVideoType(videoSrc);
         nextVideo.appendChild(source);
         nextVideo.load();
     }
 
     function loadHeroVideo(index) {
         console.log('Loading hero video:', heroVideos[index]);
-        heroSource.src = heroVideos[index].src;
-        heroSource.type = getVideoType(heroVideos[index].src);
+        const videoSrc = getVideoSrc(heroVideos[index]);
+        heroSource.src = videoSrc;
+        heroSource.type = getVideoType(videoSrc);
         heroVideo.load();
         heroVideo.play().catch(err => {
             console.error('Hero video play error:', err);
@@ -154,9 +162,12 @@ function renderVideos() {
 
     gridContainer.innerHTML = filteredVideos.map((video, index) => `
         <div class="video-tile" data-index="${allVideos.indexOf(video)}">
-            <video muted playsinline loop preload="metadata">
-                <source src="${video.src}" type="${getVideoType(video.src)}">
-            </video>
+            ${video.thumbnail
+                ? `<img src="${video.thumbnail}" alt="${video.title}" class="video-thumbnail" loading="lazy">`
+                : `<video muted playsinline loop preload="none">
+                     <source src="${getVideoSrc(video)}" type="${getVideoType(getVideoSrc(video))}">
+                   </video>`
+            }
             <div class="video-tile-overlay">
                 ${video.link
                     ? `<a href="${video.link}" class="video-tile-title video-tile-link" target="_blank" rel="noopener">${video.title}</a>`
@@ -167,20 +178,9 @@ function renderVideos() {
         </div>
     `).join('');
 
-    // Add click listeners and hover play
+    // Add click listeners
     gridContainer.querySelectorAll('.video-tile').forEach(tile => {
-        const video = tile.querySelector('video');
         const titleLink = tile.querySelector('.video-tile-link');
-
-        // Play on hover (desktop)
-        tile.addEventListener('mouseenter', () => {
-            video.play().catch(() => {});
-        });
-
-        tile.addEventListener('mouseleave', () => {
-            video.pause();
-            video.currentTime = 0;
-        });
 
         // Prevent link clicks from opening modal
         if (titleLink) {
@@ -231,8 +231,9 @@ function openModal(video) {
     const modalTitle = document.getElementById('modal-title');
     const modalSource = modalVideo.querySelector('source');
 
-    modalSource.src = video.src;
-    modalSource.type = getVideoType(video.src);
+    const videoSrc = getVideoSrc(video);
+    modalSource.src = videoSrc;
+    modalSource.type = getVideoType(videoSrc);
     modalTitle.textContent = video.title;
     modalVideo.load();
     modal.classList.add('active');
