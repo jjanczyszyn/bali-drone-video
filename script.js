@@ -18,10 +18,9 @@ function getVideoType(src) {
 // Get appropriate video source based on device
 function getVideoSrc(video, isHero = false) {
     if (isMobile) {
-        // For hero videos on mobile, use the 8-second looping version if available
-        if (isHero && video.mobileSrc) {
-            const heroSrc = video.mobileSrc.replace('.mp4', '_hero.mp4');
-            return heroSrc;
+        // For hero videos on mobile, use the single 8-second looping video
+        if (isHero) {
+            return 'videos/mobile/hero_loop.mp4';
         }
         return video.mobileSrc || video.src;
     }
