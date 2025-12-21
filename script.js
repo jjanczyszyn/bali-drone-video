@@ -16,12 +16,8 @@ function getVideoType(src) {
 }
 
 // Get appropriate video source based on device
-function getVideoSrc(video, isHero = false) {
+function getVideoSrc(video) {
     if (isMobile) {
-        // For hero videos on mobile, use the single 8-second looping video
-        if (isHero) {
-            return 'videos/mobile/hero_loop.mp4';
-        }
         return video.mobileSrc || video.src;
     }
     return video.src;
@@ -34,81 +30,27 @@ document.addEventListener('DOMContentLoaded', () => {
     initBookingForm();
 });
 
-// Rotate hero background videos with seamless transitions
-let currentHeroIndex = 0;
-let nextHeroIndex = 1;
-let heroVideos = [];
+// Initialize hero background video with looping hero_loop.mp4
 function initHeroVideoRotation() {
     const heroVideo = document.getElementById('hero-video');
     const heroSource = heroVideo.querySelector('source');
 
-    // Filter videos for hero (only those with showInHero: true)
-    heroVideos = allVideos.filter(v => v.showInHero !== false);
+    // Use appropriate hero_loop video based on device
+    const videoSrc = isMobile ? 'videos/mobile/hero_loop.mp4' : 'videos/hero_loop_desktop.mp4';
+    const posterSrc = 'videos/mobile/hero_poster.jpg';
 
-    if (heroVideos.length === 0) {
-        console.error('No videos available for hero');
-        return;
-    }
-
-    // Preload next video
-    let nextVideo = null;
-
-    function preloadNextVideo() {
-        const nextIndex = (currentHeroIndex + 1) % heroVideos.length;
-        nextVideo = document.createElement('video');
-        nextVideo.muted = true;
-        nextVideo.playsInline = true;
-        nextVideo.preload = 'auto';
-        const source = document.createElement('source');
-        const videoSrc = getVideoSrc(heroVideos[nextIndex], true);
-        source.src = videoSrc;
-        source.type = getVideoType(videoSrc);
-        nextVideo.appendChild(source);
-        nextVideo.load();
-    }
-
-    function loadHeroVideo(index) {
-        console.log('Loading hero video:', heroVideos[index]);
-        const videoSrc = getVideoSrc(heroVideos[index], true);
-        heroSource.src = videoSrc;
-        heroSource.type = getVideoType(videoSrc);
-        heroVideo.load();
-        heroVideo.loop = isMobile; // Loop hero videos on mobile since they're 8 seconds
-        heroVideo.play().catch(err => {
-            console.error('Hero video play error:', err);
-        });
-
-        // Preload next video while current plays
-        preloadNextVideo();
-    }
-
-    // Load first video
-    loadHeroVideo(currentHeroIndex);
-
-    // When video is about to end, prepare next one
-    heroVideo.addEventListener('timeupdate', () => {
-        // When 1 second left, ensure next video is ready
-        if (heroVideo.duration - heroVideo.currentTime < 1 && heroVideo.duration > 0) {
-            if (!nextVideo) {
-                preloadNextVideo();
-            }
-        }
-    });
-
-    // When video ends, immediately load next one
-    heroVideo.addEventListener('ended', () => {
-        currentHeroIndex = (currentHeroIndex + 1) % heroVideos.length;
-        loadHeroVideo(currentHeroIndex);
+    heroVideo.poster = posterSrc;
+    heroSource.src = videoSrc;
+    heroSource.type = getVideoType(videoSrc);
+    heroVideo.loop = true; // Loop the hero video
+    heroVideo.load();
+    heroVideo.play().catch(err => {
+        console.error('Hero video play error:', err);
     });
 
     // Add error handler
     heroVideo.addEventListener('error', (e) => {
         console.error('Hero video error:', e, heroVideo.error);
-        // Skip to next video on error
-        currentHeroIndex = (currentHeroIndex + 1) % heroVideos.length;
-        if (currentHeroIndex < heroVideos.length) {
-            loadHeroVideo(currentHeroIndex);
-        }
     });
 }
 
@@ -125,10 +67,8 @@ async function loadManifest() {
         allVideos = await response.json();
         console.log('Loaded videos:', allVideos);
 
-        // Set up rotating hero videos
-        if (allVideos.length > 0) {
-            initHeroVideoRotation();
-        }
+        // Initialize hero video
+        initHeroVideoRotation();
 
         renderFilters();
         renderVideos();
@@ -168,14 +108,13 @@ function renderVideos() {
         return;
     }
 
-    gridContainer.innerHTML = filteredVideos.map((video, index) => `
+    gridContainer.innerHTML = filteredVideos.map((video, index) => {
+        const videoSrc = getVideoSrc(video);
+        return `
         <div class="video-tile" data-index="${allVideos.indexOf(video)}">
-            ${video.thumbnail
-                ? `<img src="${video.thumbnail}" alt="${video.title}" class="video-thumbnail" loading="lazy">`
-                : `<video muted playsinline loop preload="none">
-                     <source src="${getVideoSrc(video)}" type="${getVideoType(getVideoSrc(video))}">
-                   </video>`
-            }
+            <video class="video-thumbnail" muted playsinline loop preload="none">
+                <source src="${videoSrc}" type="${getVideoType(videoSrc)}">
+            </video>
             <div class="video-tile-overlay">
                 ${video.link
                     ? `<a href="${video.link}" class="video-tile-title video-tile-link" target="_blank" rel="noopener">${video.title}</a>`
@@ -184,11 +123,41 @@ function renderVideos() {
                 <div class="video-tile-tag">${video.tag}</div>
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
 
-    // Add click listeners
+    // Set up Intersection Observer to autoplay videos when visible
+    const videoObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const videoEl = entry.target;
+
+            if (entry.isIntersecting) {
+                // Load and play video when it enters viewport
+                if (videoEl.readyState === 0) {
+                    // Video not loaded yet, load it first
+                    videoEl.load();
+                    videoEl.addEventListener('loadeddata', () => {
+                        videoEl.play().catch(() => {});
+                    }, { once: true });
+                } else {
+                    // Video already loaded, just play
+                    videoEl.play().catch(() => {});
+                }
+            } else {
+                // Pause video when it leaves viewport
+                videoEl.pause();
+            }
+        });
+    }, {
+        threshold: 0.5 // Play when 50% visible
+    });
+
+    // Add click listeners and observe videos
     gridContainer.querySelectorAll('.video-tile').forEach(tile => {
         const titleLink = tile.querySelector('.video-tile-link');
+        const videoEl = tile.querySelector('video');
+        const videoIndex = parseInt(tile.dataset.index);
+        const video = allVideos[videoIndex];
 
         // Prevent link clicks from opening modal
         if (titleLink) {
@@ -199,9 +168,13 @@ function renderVideos() {
 
         // Open modal on click
         tile.addEventListener('click', () => {
-            const videoIndex = parseInt(tile.dataset.index);
-            openModal(allVideos[videoIndex]);
+            openModal(video);
         });
+
+        // Observe video for autoplay when visible
+        if (videoEl) {
+            videoObserver.observe(videoEl);
+        }
     });
 }
 
@@ -230,6 +203,10 @@ function initModal() {
         modal.classList.remove('active');
         modalVideo.pause();
         modalVideo.currentTime = 0;
+        // Clear video source to free memory
+        const modalSource = modalVideo.querySelector('source');
+        modalSource.src = '';
+        modalVideo.load();
     }
 }
 
