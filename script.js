@@ -108,13 +108,9 @@ function renderVideos() {
         return;
     }
 
-    gridContainer.innerHTML = filteredVideos.map((video, index) => {
-        const videoSrc = getVideoSrc(video);
-        return `
-        <div class="video-tile" data-index="${allVideos.indexOf(video)}">
-            <video class="video-thumbnail" muted playsinline loop preload="none">
-                <source src="${videoSrc}" type="${getVideoType(videoSrc)}">
-            </video>
+    gridContainer.innerHTML = filteredVideos.map((video, index) => `
+        <div class="video-tile" data-index="${allVideos.indexOf(video)}" data-video-loaded="false">
+            <img src="${video.thumbnail}" alt="${video.title}" class="video-thumbnail" loading="lazy">
             <div class="video-tile-overlay">
                 ${video.link
                     ? `<a href="${video.link}" class="video-tile-title video-tile-link" target="_blank" rel="noopener">${video.title}</a>`
@@ -123,39 +119,61 @@ function renderVideos() {
                 <div class="video-tile-tag">${video.tag}</div>
             </div>
         </div>
-        `;
-    }).join('');
+    `).join('');
 
-    // Set up Intersection Observer to autoplay videos when visible
-    const videoObserver = new IntersectionObserver((entries) => {
+    // Set up Intersection Observer to load and autoplay videos when scrolled into view
+    const tileObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            const videoEl = entry.target;
+            const tile = entry.target;
+            const videoIndex = parseInt(tile.dataset.index);
+            const video = allVideos[videoIndex];
 
-            if (entry.isIntersecting) {
-                // Load and play video when it enters viewport
-                if (videoEl.readyState === 0) {
-                    // Video not loaded yet, load it first
-                    videoEl.load();
-                    videoEl.addEventListener('loadeddata', () => {
-                        videoEl.play().catch(() => {});
-                    }, { once: true });
-                } else {
-                    // Video already loaded, just play
+            if (entry.isIntersecting && tile.dataset.videoLoaded === 'false') {
+                // Replace thumbnail with video
+                const thumbnail = tile.querySelector('.video-thumbnail');
+                const videoSrc = getVideoSrc(video);
+
+                const videoEl = document.createElement('video');
+                videoEl.className = 'video-thumbnail';
+                videoEl.muted = true;
+                videoEl.playsInline = true;
+                videoEl.loop = true;
+
+                const source = document.createElement('source');
+                source.src = videoSrc;
+                source.type = getVideoType(videoSrc);
+                videoEl.appendChild(source);
+
+                // Replace thumbnail with video
+                thumbnail.replaceWith(videoEl);
+                tile.dataset.videoLoaded = 'true';
+
+                // Load and autoplay
+                videoEl.load();
+                videoEl.addEventListener('loadeddata', () => {
+                    videoEl.play().catch(() => {});
+                }, { once: true });
+            } else if (!entry.isIntersecting && tile.dataset.videoLoaded === 'true') {
+                // Pause video when out of viewport
+                const videoEl = tile.querySelector('video');
+                if (videoEl) {
+                    videoEl.pause();
+                }
+            } else if (entry.isIntersecting && tile.dataset.videoLoaded === 'true') {
+                // Resume video when back in viewport
+                const videoEl = tile.querySelector('video');
+                if (videoEl && videoEl.paused) {
                     videoEl.play().catch(() => {});
                 }
-            } else {
-                // Pause video when it leaves viewport
-                videoEl.pause();
             }
         });
     }, {
-        threshold: 0.5 // Play when 50% visible
+        threshold: 0.5 // Trigger when 50% visible
     });
 
-    // Add click listeners and observe videos
+    // Add click listeners and observe tiles
     gridContainer.querySelectorAll('.video-tile').forEach(tile => {
         const titleLink = tile.querySelector('.video-tile-link');
-        const videoEl = tile.querySelector('video');
         const videoIndex = parseInt(tile.dataset.index);
         const video = allVideos[videoIndex];
 
@@ -171,10 +189,8 @@ function renderVideos() {
             openModal(video);
         });
 
-        // Observe video for autoplay when visible
-        if (videoEl) {
-            videoObserver.observe(videoEl);
-        }
+        // Observe tile for lazy loading
+        tileObserver.observe(tile);
     });
 }
 

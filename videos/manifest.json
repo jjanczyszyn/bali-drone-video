@@ -43,5 +43,21 @@
     "tag": "Business",
     "link": "https://share.google/gWcx7cH2lJ1TXkuFz",
     "showInHero": false
+  },
+  {
+    "src": "videos/The_BBQ_Guest_House.mp4",
+    "mobileSrc": "videos/mobile/The_BBQ_Guest_House.mp4",
+    "thumbnail": "videos/thumbnails/The_BBQ_Guest_House.jpg",
+    "title": "The BBQ Guest House",
+    "tag": "Villa",
+    "showInHero": true
+  },
+  {
+    "src": "videos/The_BBQ_Guest_House_1.mp4",
+    "mobileSrc": "videos/mobile/The_BBQ_Guest_House_1.mp4",
+    "thumbnail": "videos/thumbnails/The_BBQ_Guest_House_1.jpg",
+    "title": "The BBQ Guest House",
+    "tag": "Villa",
+    "showInHero": false
   }
 ]
