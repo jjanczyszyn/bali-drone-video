@@ -50,6 +50,7 @@
     "thumbnail": "videos/thumbnails/The_BBQ_Guest_House.jpg",
     "title": "The BBQ Guest House",
     "tag": "Villa",
+    "link": "https://maps.app.goo.gl/zXoqV2QQoaW2q5tb8",
     "showInHero": true
   },
   {
@@ -58,6 +59,7 @@
     "thumbnail": "videos/thumbnails/The_BBQ_Guest_House_1.jpg",
     "title": "The BBQ Guest House",
     "tag": "Villa",
+    "link": "https://maps.app.goo.gl/zXoqV2QQoaW2q5tb8",
     "showInHero": false
   }
 ]
