@@ -259,7 +259,7 @@ function initBookingForm() {
         };
 
         // Format WhatsApp message with proper line breaks
-        let message = `Hi JJ, I want to book the 1,000,000 IDR Neo drone shoot.%0A%0A`;
+        let message = `Hi JJ, I want to book a drone shoot.%0A%0A`;
         message += `Name: ${formData.name}%0A`;
         message += `WhatsApp: ${formData.whatsapp}%0A`;
         message += `Business: ${formData.business}%0A`;
