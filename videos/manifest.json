@@ -1,5 +1,13 @@
 [
   {
+    "src": "videos/romantic.mp4",
+    "mobileSrc": "videos/mobile/romantic.mp4",
+    "thumbnail": "videos/thumbnails/romantic.jpg",
+    "title": "Couples Shot",
+    "tag": "Couples",
+    "showInHero": true
+  },
+  {
     "src": "videos/Manna_Ubud.mp4",
     "mobileSrc": "videos/mobile/Manna_Ubud.mp4",
     "thumbnail": "videos/thumbnails/Manna_Ubud.jpg",
